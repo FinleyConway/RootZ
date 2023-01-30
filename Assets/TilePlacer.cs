@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TilePlacer : MonoBehaviour
 {
-    [SerializeField] private GridObjetTypeSO _placedObject;
-
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
     [SerializeField] private int _cellSize;
@@ -19,87 +17,72 @@ public class TilePlacer : MonoBehaviour
         _grid = new Grid3D<GridObject>(_rows, _columns, _cellSize, transform.position, (Grid3D<GridObject> g, int x, int z) => new GridObject(g, x, z));
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        PlaceGridObject();
-        RotateGridObject();
-        RemoveGridObject();
+        FarmingInteractingSystem.OnPlantCrop += PlaceGridObject;
+        FarmingInteractingSystem.OnTryHarvest += RemoveGridObject;
     }
 
-    private void PlaceGridObject()
+    private void OnDestroy()
     {
-        if (Input.GetMouseButtonDown(0))
+        FarmingInteractingSystem.OnPlantCrop -= PlaceGridObject;
+        FarmingInteractingSystem.OnTryHarvest -= RemoveGridObject;
+    }
+
+    private void PlaceGridObject(Vector3 worldPosition, GridObjetTypeSO plant)
+    {
+        _grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
+
+        List<Vector2Int> gridPositions = plant.GetGridPositionList(new Vector2Int(x, z), _currentDir);
+
+        bool canBuild = true;
+        foreach (Vector2Int position in gridPositions)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue))
+            if (!_grid.IsInsideGrid(position.x, position.y))
             {
-                _grid.ConvertWorldToGrid(hit.point, out int x, out int z);
+                canBuild = false;
+                break;
+            }
 
-                List<Vector2Int> gridPositions = _placedObject.GetGridPositionList(new Vector2Int(x, z), _currentDir);
-
-                bool canBuild = true;
-                foreach (Vector2Int position in gridPositions)
-                {
-                    if (!_grid.IsInsideGrid(position.x, position.y))
-                    {
-                        canBuild = false;
-                        break;
-                    }
-
-                    if (!_grid.GetObject(position.x, position.y).IsTileEmpty())
-                    {
-                        canBuild = false;
-                        break;
-                    }
-                }
-
-                if (canBuild)
-                {
-                    Vector2Int rotationOffset = _placedObject.GetRotationOffset(_currentDir);
-                    Vector3 placedObjectWorldPosition = _grid.ConvertGridToWorld(x, z) + new Vector3(rotationOffset.x, 0, rotationOffset.y) * _grid.GetCellSize();
-                    GridPlacedObject placedObject = GridPlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), _currentDir, _placedObject);
-
-                    foreach (Vector2Int position in gridPositions)
-                    {
-                        _grid.GetObject(position.x, position.y).SetTileObject(placedObject);
-                    }
-                }
-                else
-                {
-                    print("cant place here");
-                }
+            if (!_grid.GetObject(position.x, position.y).IsTileEmpty())
+            {
+                canBuild = false;
+                break;
             }
         }
-    }
 
-    private void RotateGridObject()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (canBuild)
         {
-            _currentDir = GridObjetTypeSO.GetNextDir(_currentDir);
-            print(_currentDir);
+            Vector2Int rotationOffset = plant.GetRotationOffset(_currentDir);
+            Vector3 placedObjectWorldPosition = _grid.ConvertGridToWorld(x, z) + new Vector3(rotationOffset.x, 0, rotationOffset.y) * _grid.GetCellSize();
+            GridPlacedObject placedObject = GridPlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), _currentDir, plant);
+
+            foreach (Vector2Int position in gridPositions)
+            {
+                _grid.GetObject(position.x, position.y).SetTileObject(placedObject);
+            }
+        }
+        else
+        {
+            print("cant place here");
         }
     }
 
-
-    private void RemoveGridObject()
+    private void RemoveGridObject(Vector3 worldPosition)
     {
-        if (Input.GetMouseButtonDown(1))
+        _grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
+        if (_grid.IsInsideGrid(x, z))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue))
+            GridObject gridObject = _grid.GetObject(worldPosition);
+            GridPlacedObject placedObject = gridObject.GetPlacedObject();
+            if (placedObject != null)
             {
-                GridObject gridObject = _grid.GetObject(hit.point);
-                GridPlacedObject placedObject = gridObject.GetPlacedObject();
-                if (placedObject != null)
-                {
-                    placedObject.DestroySelf();
+                placedObject.DestroySelf();
 
-                    List<Vector2Int> gridPositions = placedObject.GetGridPositionList();
-                    foreach (Vector2Int position in gridPositions)
-                    {
-                        _grid.GetObject(position.x, position.y).RemoveTileObject();
-                    }
+                List<Vector2Int> gridPositions = placedObject.GetGridPositionList();
+                foreach (Vector2Int position in gridPositions)
+                {
+                    _grid.GetObject(position.x, position.y).RemoveTileObject();
                 }
             }
         }

@@ -6,7 +6,6 @@ public class GridObjetTypeSO : ScriptableObject
 {
     public string Name;
     public Transform Prefab;
-    public Transform Visual;
     public Vector2Int GridSize;
 
     public static Dir GetNextDir(Dir dir)
