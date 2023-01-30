@@ -4,22 +4,27 @@ using UnityEngine;
 
 public class FarmingInteractingSystem : MonoBehaviour
 {
-    [SerializeField] private GridObjetTypeSO _placedObject;
+    [SerializeField] private List<PlantSO> _seeds;
+    private PlantSO _currentSeed;
+    private int _currentIndex = 0;
 
     [SerializeField] private float _interactDistance;
     [SerializeField] private LayerMask _groundMask;
     private Camera _cam;
 
-    public static event Action<Vector3, GridObjetTypeSO> OnPlantCrop;
+    public static event Action<Vector3, PlantSO> OnPlantCrop;
     public static event Action<Vector3> OnTryHarvest;
 
     private void Awake()
     {
         _cam = Camera.main;
+        if (_seeds.Count > 0) _currentSeed = _seeds[0];
     }
 
     private void Update()
     {
+        SeedSelector();
+
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 hit = LookAtHit();
@@ -33,6 +38,27 @@ public class FarmingInteractingSystem : MonoBehaviour
         }
     }
 
+    public void AddSeed(PlantSO plant)
+    {
+        _seeds.Add(plant);
+    }
+
+    // increments through crops and selected the current index
+    private void SeedSelector()
+    {
+        float delta = Input.mouseScrollDelta.y;
+        if (delta == 0) return;
+
+        if (delta > 0) _currentIndex++;
+        if (delta < 0) _currentIndex--;
+
+        if (_currentIndex < 0) _currentIndex = _seeds.Count - 1;
+        else if (_currentIndex > _seeds.Count - 1) _currentIndex = 0;
+
+        _currentSeed = _seeds[_currentIndex];
+    }
+
+    // get the position of where the raycast hits
     private Vector3 LookAtHit()
     {
         Transform lookPos = _cam.transform;
@@ -45,11 +71,17 @@ public class FarmingInteractingSystem : MonoBehaviour
 
     private void PlantCrop(Vector3 worldPosition)
     {
-        OnPlantCrop?.Invoke(worldPosition, _placedObject);
+        OnPlantCrop?.Invoke(worldPosition, _currentSeed);
     }
 
     private void ObtainCrop(Vector3 worldPosition)
     {
         OnTryHarvest?.Invoke(worldPosition);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Transform lookPos = Camera.main.transform;
+        Gizmos.DrawRay(lookPos.position, lookPos.forward * _interactDistance);
     }
 }

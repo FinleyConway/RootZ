@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912a59cee987a624cb5ab1714820bd51, type: 3}
+  m_Name: Carrot
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 3479890019727391521, guid: 382562e03dd4314419aa62633fe31ebe, type: 3}
+  <GridSize>k__BackingField: {x: 1, y: 1}
+  <DaysToGrow>k__BackingField: 2
+  <GrowthStages>k__BackingField:
+  - {fileID: 3479890019727391521, guid: 6e90efaedf34c114bb47a1e164446691, type: 3}
+  - {fileID: 3479890019727391521, guid: 7b609c21152d2044790af67a0a47cc28, type: 3}

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GridObject", menuName = "GridObjects")]
 public class GridObjetTypeSO : ScriptableObject
 {
-    public string Name;
-    public Transform Prefab;
-    public Vector2Int GridSize;
+    [field: Header("Grid Object")]
+    [field: SerializeField] public Transform Prefab { get; private set; }
+    [field: SerializeField] public Vector2Int GridSize { get; private set; } = Vector2Int.one;
 
     public static Dir GetNextDir(Dir dir)
     {

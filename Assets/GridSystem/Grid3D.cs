@@ -45,6 +45,8 @@ public class Grid3D<T>
 
     public int GetCellSize() => _cellSize;
 
+    public T[,] GetGrid() => _grid;
+
     public void ConvertWorldToGrid(Vector3 worldPosition, out int x, out int z)
     {
         x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
