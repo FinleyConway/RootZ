@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class FarmPlotObject
@@ -8,8 +8,9 @@ public class FarmPlotObject
     private Grid3D<FarmPlotObject> _grid;
     private FarmPlotPlacedObject _placedObject;
 
-    private int _growthAmount = 0;
-    private int _currentGrowthDay = 0;
+    private bool _isGrowing = false;
+    private bool _isDoneGrowing = false;
+    private bool _isInfected = false;
 
     public FarmPlotObject(Grid3D<FarmPlotObject> grid, int x, int z)
     {
@@ -17,6 +18,10 @@ public class FarmPlotObject
         _xPosition = x;
         _zPosition = z;
     }
+
+    public bool IsGrowing => _isGrowing;
+
+    public bool IsDoneGrowning => _isDoneGrowing;
 
     public FarmPlotPlacedObject GetPlacedObject()
     {
@@ -31,26 +36,26 @@ public class FarmPlotObject
     public void SetTileObject(FarmPlotPlacedObject transform)
     {
         _placedObject = transform;
-        _growthAmount = _placedObject.GetGrowthStages().GetGrowths().Count;
         _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
     }
 
     public void RemoveTileObject()
     {
+        _isGrowing = false;
+        _isInfected = false;
+        _isDoneGrowing = false;
         _placedObject = null;
         _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
     }
 
-    public void Grow()
+    public IEnumerator Grow()
     {
-        if (_currentGrowthDay >= _growthAmount - 1) return;
+        _isGrowing = true;
+        
+        float duration = _placedObject.GetPlacedObjectTypeSO().GrowthTime;
+        yield return new WaitForSeconds(duration);
 
-        List<Transform> list = _placedObject.GetGrowthStages().GetGrowths();
-
-        list[_currentGrowthDay].gameObject.SetActive(false);
-
-        _currentGrowthDay++;
-
-        list[_currentGrowthDay].gameObject.SetActive(true);
+        _isDoneGrowing = true;
+        
     }
 }

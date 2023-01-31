@@ -5,6 +5,6 @@ using UnityEngine;
 public class PlantSO : GridObjetTypeSO
 {
     [field: Header("Growing")]
-    [field: SerializeField] public int DaysToGrow { get; private set; } = 0;
-    [field: SerializeField] public List<Transform> GrowthStages { get; private set; }
+    [field: SerializeField] public float GrowthTime { get; private set; } = 0;
+    [field: SerializeField] public Transform GrownAsset { get; private set; }
 }

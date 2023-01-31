@@ -8,11 +8,11 @@ public class FarmManager : MonoBehaviour
     [SerializeField] private int _cellSize;
     [SerializeField] private bool _drawDebug = true;
 
-    private Grid3D<FarmPlotObject> _grid;
+    public Grid3D<FarmPlotObject> Grid { get; private set; }
 
     private void Awake()
     {
-        _grid = new Grid3D<FarmPlotObject>(_rows, _columns, _cellSize, transform.position, (Grid3D<FarmPlotObject> g, int x, int z) => new FarmPlotObject(g, x, z));
+        Grid = new Grid3D<FarmPlotObject>(_rows, _columns, _cellSize, transform.position, (Grid3D<FarmPlotObject> g, int x, int z) => new FarmPlotObject(g, x, z));
     }
 
     private void OnEnable()
@@ -29,19 +29,16 @@ public class FarmManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            UpdateAllCrops();
-        }
+        UpdateAllCrops();
     }
 
     // place item on grid
     private void PlaceCrop(Vector3 worldPosition, PlantSO crop)
     {
-        _grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
+        Grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
 
         // check if the world position is within the grid
-        if (_grid.IsInsideGrid(x, z))
+        if (Grid.IsInsideGrid(x, z))
         {
             // get all grid positions of the object
             List<Vector2Int> gridPositions = crop.GetGridPositionList(new Vector2Int(x, z), GridObjetTypeSO.Dir.Down);
@@ -50,13 +47,13 @@ public class FarmManager : MonoBehaviour
             bool canBuild = true;
             foreach (Vector2Int position in gridPositions)
             {
-                if (!_grid.IsInsideGrid(position.x, position.y))
+                if (!Grid.IsInsideGrid(position.x, position.y))
                 {
                     canBuild = false;
                     break;
                 }
 
-                if (!_grid.GetObject(position.x, position.y).IsTileEmpty())
+                if (!Grid.GetObject(position.x, position.y).IsTileEmpty())
                 {
                     canBuild = false;
                     break;
@@ -69,12 +66,12 @@ public class FarmManager : MonoBehaviour
                 print("Placed Crop");
 
                 Vector2Int rotationOffset = crop.GetRotationOffset(GridObjetTypeSO.Dir.Down);
-                Vector3 placedObjectWorldPosition = _grid.ConvertGridToWorld(x, z) + new Vector3(rotationOffset.x, 0, rotationOffset.y) * _grid.GetCellSize();
+                Vector3 placedObjectWorldPosition = Grid.ConvertGridToWorld(x, z) + new Vector3(rotationOffset.x, 0, rotationOffset.y) * Grid.GetCellSize();
                 FarmPlotPlacedObject placedObject = FarmPlotPlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), GridObjetTypeSO.Dir.Down, crop);
 
                 foreach (Vector2Int position in gridPositions)
                 {
-                    _grid.GetObject(position.x, position.y).SetTileObject(placedObject);
+                    Grid.GetObject(position.x, position.y).SetTileObject(placedObject);
                 }
             }
             // inform the player that they cant
@@ -89,10 +86,10 @@ public class FarmManager : MonoBehaviour
     private void RemoveCrop(Vector3 worldPosition)
     {
         // check if the world position is in the grid
-        _grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
-        if (_grid.IsInsideGrid(x, z))
+        Grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
+        if (Grid.IsInsideGrid(x, z) && Grid.GetObject(worldPosition).IsDoneGrowning)
         {
-            FarmPlotObject gridObject = _grid.GetObject(worldPosition);
+            FarmPlotObject gridObject = Grid.GetObject(worldPosition);
             FarmPlotPlacedObject placedObject = gridObject.GetPlacedObject();
             if (placedObject != null)
             {
@@ -101,7 +98,7 @@ public class FarmManager : MonoBehaviour
                 List<Vector2Int> gridPositions = placedObject.GetGridPositionList();
                 foreach (Vector2Int position in gridPositions)
                 {
-                    _grid.GetObject(position.x, position.y).RemoveTileObject();
+                    Grid.GetObject(position.x, position.y).RemoveTileObject();
                 }
             }
         }
@@ -109,11 +106,15 @@ public class FarmManager : MonoBehaviour
 
     public void UpdateAllCrops()
     {
-        foreach (FarmPlotObject crop in _grid.GetGrid())
+        FarmPlotObject[,] grid = Grid.GetGrid();
+        for (int x = 0; x < Grid.GetRow(); x++)
         {
-            if (!crop.IsTileEmpty())
+            for (int y = 0; y < Grid.GetColumns(); y++)
             {
-                crop.Grow();
+                if (!grid[x, y].IsTileEmpty() && !grid[x, y].IsGrowing)
+                {
+                    StartCoroutine(grid[x, y].Grow());
+                }
             }
         }
     }
