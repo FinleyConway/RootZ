@@ -8,9 +8,9 @@ public class FarmPlotObject
     private Grid3D<FarmPlotObject> _grid;
     private FarmPlotPlacedObject _placedObject;
 
-    private bool _isGrowing = false;
-    private bool _isDoneGrowing = false;
-    private bool _isInfected = false;
+    public bool IsGrowing { get; private set; } = false;
+    public bool IsDoneGrowing { get; private set; }= false;
+    public bool IsInfected { get; set; } = false;
 
     public FarmPlotObject(Grid3D<FarmPlotObject> grid, int x, int z)
     {
@@ -18,10 +18,6 @@ public class FarmPlotObject
         _xPosition = x;
         _zPosition = z;
     }
-
-    public bool IsGrowing => _isGrowing;
-
-    public bool IsDoneGrowning => _isDoneGrowing;
 
     public FarmPlotPlacedObject GetPlacedObject()
     {
@@ -41,21 +37,20 @@ public class FarmPlotObject
 
     public void RemoveTileObject()
     {
-        _isGrowing = false;
-        _isInfected = false;
-        _isDoneGrowing = false;
+        IsGrowing = false;
+        IsInfected = false;
+        IsDoneGrowing = false;
         _placedObject = null;
         _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
     }
 
     public IEnumerator Grow()
     {
-        _isGrowing = true;
+        IsGrowing = true;
         
         float duration = _placedObject.GetPlacedObjectTypeSO().GrowthTime;
         yield return new WaitForSeconds(duration);
 
-        _isDoneGrowing = true;
-        
+        IsDoneGrowing = true;
     }
 }

@@ -27,11 +27,6 @@ public class FarmManager : MonoBehaviour
         FarmingInteractingSystem.OnTryHarvest -= RemoveCrop;
     }
 
-    private void Update()
-    {
-        UpdateAllCrops();
-    }
-
     // place item on grid
     private void PlaceCrop(Vector3 worldPosition, PlantSO crop)
     {
@@ -87,7 +82,7 @@ public class FarmManager : MonoBehaviour
     {
         // check if the world position is in the grid
         Grid.ConvertWorldToGrid(worldPosition, out int x, out int z);
-        if (Grid.IsInsideGrid(x, z) && Grid.GetObject(worldPosition).IsDoneGrowning)
+        if (Grid.IsInsideGrid(x, z) && Grid.GetObject(worldPosition).IsDoneGrowing)
         {
             FarmPlotObject gridObject = Grid.GetObject(worldPosition);
             FarmPlotPlacedObject placedObject = gridObject.GetPlacedObject();
@@ -104,7 +99,8 @@ public class FarmManager : MonoBehaviour
         }
     }
 
-    public void UpdateAllCrops()
+    // goes through all the crops and activate the growing state
+    public void InitGrowing()
     {
         FarmPlotObject[,] grid = Grid.GetGrid();
         for (int x = 0; x < Grid.GetRow(); x++)
