@@ -11,7 +11,7 @@ public class FarmPlotPlacedObject : MonoBehaviour
         placedObject._placedObjectTypeSO = placedObjectTypeSO;
         placedObject._origin = origin;
         placedObject._dir = dir;
-        placedObject._growthStages = placedObjectTransform.GetComponentInChildren<GrowthStages>();
+        placedObject._root = placedObjectTransform.GetComponentInChildren<Root>();
 
         return placedObject;
     }
@@ -19,7 +19,7 @@ public class FarmPlotPlacedObject : MonoBehaviour
     private PlantSO _placedObjectTypeSO;
     private GridObjetTypeSO.Dir _dir;
     private Vector2Int _origin;
-    private GrowthStages _growthStages;
+    private Root _root;
 
     public Vector2Int GetGridPosition()
     {
@@ -36,13 +36,13 @@ public class FarmPlotPlacedObject : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public PlantSO GetPlacedObjectTypeSO()
+    public PlantSO GetObjectData()
     {
         return _placedObjectTypeSO;
     }
 
-    public GrowthStages GetGrowthStages()
+    public Root GetRoot()
     {
-        return _growthStages;
+        return _root;
     }
 }

@@ -13,7 +13,6 @@ public class FarmingInteractingSystem : MonoBehaviour
     private Camera _cam;
 
     public static event Action<Vector3, PlantSO> OnPlantCrop;
-    public static event Action<Vector3> OnTryHarvest;
 
     private void Awake()
     {
@@ -29,12 +28,6 @@ public class FarmingInteractingSystem : MonoBehaviour
         {
             Vector3 hit = LookAtHit();
             PlantCrop(hit);
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            Vector3 hit = LookAtHit();
-            ObtainCrop(hit);
         }
     }
 
@@ -72,11 +65,6 @@ public class FarmingInteractingSystem : MonoBehaviour
     private void PlantCrop(Vector3 worldPosition)
     {
         OnPlantCrop?.Invoke(worldPosition, _currentSeed);
-    }
-
-    private void ObtainCrop(Vector3 worldPosition)
-    {
-        OnTryHarvest?.Invoke(worldPosition);
     }
 
     private void OnDrawGizmos()

@@ -1,5 +1,4 @@
-using System.Collections;
-using UnityEngine;
+using System;
 
 public class FarmPlotObject
 {
@@ -8,9 +7,7 @@ public class FarmPlotObject
     private Grid3D<FarmPlotObject> _grid;
     private FarmPlotPlacedObject _placedObject;
 
-    public bool IsGrowing { get; private set; } = false;
-    public bool IsDoneGrowing { get; private set; }= false;
-    public bool IsInfected { get; set; } = false;
+    public static event Action<FarmPlotObject> OnRemovePlot;
 
     public FarmPlotObject(Grid3D<FarmPlotObject> grid, int x, int z)
     {
@@ -31,26 +28,24 @@ public class FarmPlotObject
 
     public void SetTileObject(FarmPlotPlacedObject transform)
     {
+        transform.GetRoot().OnDestroy += KillPlant;
+
         _placedObject = transform;
         _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
     }
 
-    public void RemoveTileObject()
+    private void KillPlant(bool killedByPlayer)
     {
-        IsGrowing = false;
-        IsInfected = false;
-        IsDoneGrowing = false;
-        _placedObject = null;
-        _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
+        _placedObject.DestroySelf();
+        RemoveTileObject();
+        OnRemovePlot?.Invoke(this);
     }
 
-    public IEnumerator Grow()
+    public void RemoveTileObject()
     {
-        IsGrowing = true;
-        
-        float duration = _placedObject.GetPlacedObjectTypeSO().GrowthTime;
-        yield return new WaitForSeconds(duration);
+        _placedObject.GetRoot().OnDestroy -= KillPlant;
 
-        IsDoneGrowing = true;
+        _placedObject = null;
+        _grid.TriggerGridObjectChanged(_xPosition, _zPosition);
     }
 }

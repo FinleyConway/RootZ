@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 912a59cee987a624cb5ab1714820bd51, type: 3}
   m_Name: Carrot
   m_EditorClassIdentifier: 
-  <Prefab>k__BackingField: {fileID: 3479890019727391521, guid: 382562e03dd4314419aa62633fe31ebe, type: 3}
+  <Prefab>k__BackingField: {fileID: 6375615433244987198, guid: 941a1896038f03d478e35d5183e2f326, type: 3}
   <GridSize>k__BackingField: {x: 1, y: 1}
-  <GrowthTime>k__BackingField: 2
-  <GrownAsset>k__BackingField: {fileID: 0}
+  <GrowthTime>k__BackingField: 0
