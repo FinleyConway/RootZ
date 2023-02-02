@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
     [SerializeField] private float _movementSpeed = 5;
     [SerializeField] private float _mouseSensitivity = 3.5f;
@@ -8,8 +8,9 @@ public class Player : MonoBehaviour
     private float _cameraPitch = 0.0f;
     private CharacterController _controller;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -23,11 +24,10 @@ public class Player : MonoBehaviour
 
     private void LateUpdate()
     {
-        Camera.main.transform.position = _cameraHolder.position;
-        Camera.main.transform.rotation = _cameraHolder.rotation;
+        Camera.main.transform.SetPositionAndRotation(_cameraHolder.position, _cameraHolder.rotation);
     }
 
-    void HandleSimpleMove()
+    private void HandleSimpleMove()
     {
         Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         targetDir.Normalize();
@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         _controller.SimpleMove(direction * _movementSpeed);
     }
 
-    void HandleLook()
+    private void HandleLook()
     {
         Vector2 delta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
@@ -45,5 +45,10 @@ public class Player : MonoBehaviour
 
         _cameraHolder.localEulerAngles = Vector3.right * _cameraPitch;
         transform.Rotate(Vector3.up * delta.x * _mouseSensitivity);
+    }
+
+    protected override void Death()
+    {
+
     }
 }

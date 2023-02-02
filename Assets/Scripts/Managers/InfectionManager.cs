@@ -78,9 +78,25 @@ public class InfectionManager : MonoBehaviour
         {
             _currentlyInfectingPlots.Remove(plot);
             _farm.GetActiveCrops().Add(plot);
-        }
 
-        if (!killedByPlayer && _canInfect)
+            if (_canInfect)
+            {
+                // try get the next active crop
+                int cropAmount = _farm.GetActiveCrops().Count;
+                if (cropAmount > 0)
+                {
+                    // get a random active plot
+                    FarmPlotObject randomPlot = _farm.GetActiveCrops()[Random.Range(0, cropAmount)];
+                    // infect it
+                    randomPlot.GetPlacedObject().GetRoot().TriggerGrow(ResistantDecider(randomPlot));
+
+                    // remove it from normal and add it to infection list
+                    _currentlyInfectingPlots.Add(randomPlot);
+                    _farm.RemoveActiveObjet(randomPlot);
+                }
+            }
+        }
+        else if (!killedByPlayer && _canInfect)
         {
             // remove it from the infection list
             _currentlyInfectingPlots.Remove(plot);

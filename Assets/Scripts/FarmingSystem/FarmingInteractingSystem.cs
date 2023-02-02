@@ -12,6 +12,7 @@ public class FarmingInteractingSystem : MonoBehaviour
     [SerializeField] private List<PlantSO> _seeds;
     private PlantSO _currentSeed;
     private int _currentIndex = 0;
+    private bool _canPlant = true;
 
     [SerializeField] private float _interactDistance;
     [SerializeField] private LayerMask _groundMask;
@@ -25,15 +26,27 @@ public class FarmingInteractingSystem : MonoBehaviour
         if (_seeds.Count > 0) _currentSeed = _seeds[0];
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnGameStart += GameManager_OnGameStart;
+        GameManager.OnDownTime += GameManager_OnDownTime;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGameStart -= GameManager_OnGameStart;
+        GameManager.OnDownTime += GameManager_OnDownTime;
+    }
+
     private void Update()
     {
         SeedSelector();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1) && _canPlant)
         {
             Vector3 hit = LookAtHit();
             PlantCrop(hit);
-            _plantSound?.Play(_source);
+            if (_plantSound != null) _plantSound.Play(_source);
         }
     }
 
@@ -71,6 +84,16 @@ public class FarmingInteractingSystem : MonoBehaviour
     private void PlantCrop(Vector3 worldPosition)
     {
         OnPlantCrop?.Invoke(worldPosition, _currentSeed);
+    }
+
+    private void GameManager_OnDownTime()
+    {
+        _canPlant = true;
+    }
+
+    private void GameManager_OnGameStart()
+    {
+        _canPlant = false;
     }
 
     private void OnDrawGizmos()

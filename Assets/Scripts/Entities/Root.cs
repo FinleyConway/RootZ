@@ -1,11 +1,13 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class Root : Entity
 {
-    private const float _growRate = 0.05f;
-    private IEnumerator _grow;
+    private float _currentGrowTime;
+    private float _growTime;
+    private float _currentGrowValue;
+    private bool _canGrow;
+
     private const string _growName = "Grow_";
 
     private MeshRenderer _mesh;
@@ -26,31 +28,40 @@ public class Root : Entity
         }
     }
 
+    private void Update()
+    {
+        if (_canGrow) Grow();
+    }
+
     public void TriggerGrow(float infectionRate)
     {
-        print("?");
-        _grow = Grow(infectionRate);
-        StartCoroutine(_grow);
+        _currentGrowTime = infectionRate;
+        _currentGrowValue = _shaderMat.GetFloat(_growName);
+        _canGrow = true;
     }
 
     private void StopGrow()
     {
-        StopCoroutine(_grow);
+        _canGrow = false;
+        _currentGrowTime = 0;
+        _currentGrowValue = 0;
+        _growTime = 0;
         _shaderMat.SetFloat(_growName, 0);
     }
 
-    private IEnumerator Grow(float infectionRate)
+    private void Grow()
     {
-        float growValue = _shaderMat.GetFloat(_growName);
-
-        while (growValue < 1)
+        if (_growTime < _currentGrowTime)
         {
-            growValue += 1 / (infectionRate / _growRate);
-            _shaderMat.SetFloat(_growName, growValue);
+            _currentGrowValue = Mathf.Lerp(0, 1, _growTime / _currentGrowTime);
+            _shaderMat.SetFloat(_growName, _currentGrowValue);
 
-            yield return new WaitForSeconds(_growRate);
+            _growTime += Time.deltaTime;
         }
-        OnDestroy?.Invoke(false);
+        else
+        {
+            OnDestroy?.Invoke(false);
+        }
     }
 
     public void Kill() => Death();

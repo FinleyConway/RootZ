@@ -9,6 +9,7 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
 
     [Header("Reference To Farm")]
     [SerializeField] private FarmManager _farm;
+    private Animator _anim;
 
     private bool _canSell = false;
 
@@ -16,6 +17,8 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
 
     private void OnEnable()
     {
+        _anim = GetComponentInChildren<Animator>();
+
         GameManager.OnGameStart += GameManager_OnGameStart;
         GameManager.OnDownTime += GameManager_OnDownTime;
     }
@@ -31,7 +34,7 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
         if (_canSell)
         {
             SellCrops();
-            _openSound.Play(_source);
+            if (_openSound != null) _openSound.Play(_source);
         }
     }
 
@@ -45,6 +48,7 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
         }
         _farm.GetActiveCrops().Clear();
         OnSellCrops?.Invoke(amount);
+        _anim.SetTrigger("Sell");
     }
 
     public void SetBuyingState(bool state) => _canSell = state;

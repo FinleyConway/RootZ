@@ -40,10 +40,14 @@ public class FarmPlotObject
     {
         if (!killedByPlayer)
         {
+            OnRemovePlot?.Invoke(this, killedByPlayer);
             _placedObject.DestroySelf();
             RemoveTileObject();
         }
-        OnRemovePlot?.Invoke(this, killedByPlayer);
+        else
+        {
+            OnRemovePlot?.Invoke(this, killedByPlayer);
+        }
     }
 
     public void RemoveTileObject()

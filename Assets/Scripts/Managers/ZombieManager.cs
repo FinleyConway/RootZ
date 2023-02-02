@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ZombieManager : MonoBehaviour
 {
+
     private void OnEnable()
     {
         FarmPlotObject.OnRemovePlot += SpawnEnemy;
@@ -18,9 +19,11 @@ public class ZombieManager : MonoBehaviour
     {
         if (killedByPlayer) return;
 
-        Transform temp = plot.GetPlacedObject().GetObjectData().ZombiePrefab;
-        //Entity zombie = Instantiate(temp);
+        Transform perfab = plot.GetPlacedObject().GetObjectData().ZombiePrefab;
+        Transform temp = Instantiate(perfab);
+        temp.position = plot.GetPlacedObject().transform.position;
 
-        //zombie.position = plot.GetPlacedObject().transform.position;
+        Zombie zombie = temp.GetComponent<Zombie>();
+        //zombie.Init(_playerPosition.position);
     }
 }

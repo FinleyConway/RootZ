@@ -33,8 +33,14 @@ public class GameManager : MonoBehaviour
         UpdateGameState(GameState.Intro);
     }
 
+    private void OnEnable()
+    {
+        StartGame.OnStartGame += UpdateGameState;
+    }
+
     private void OnDestroy()
     {
+        StartGame.OnStartGame -= UpdateGameState;
         _timer.OnTimerFinish -= OnTimerFinish;
     }
 
