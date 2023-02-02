@@ -29,10 +29,11 @@ public class Player : MonoBehaviour
 
     void HandleSimpleMove()
     {
-        Vector2 targetDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        Vector3 targetDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         targetDir.Normalize();
 
-        _controller.SimpleMove(targetDir * _movementSpeed);
+        Vector3 direction = transform.TransformDirection(targetDir);
+        _controller.SimpleMove(direction * _movementSpeed);
     }
 
     void HandleLook()

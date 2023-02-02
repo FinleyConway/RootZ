@@ -81,15 +81,11 @@ public class FarmManager : MonoBehaviour
                     Grid.GetObject(position.x, position.y).SetTileObject(placedObject);
                 }
             }
-            // inform the player that they cant
-            else
-            {
-            }
         }
     }
 
     // get all crops on the farm before the games starts
-    public void GetPlantedCropsAmount()
+    public void GetPlantedCrops()
     {
         for (int x = 0; x < _rows; x++)
         {

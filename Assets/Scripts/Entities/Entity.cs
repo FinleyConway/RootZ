@@ -6,18 +6,18 @@ public class Entity : MonoBehaviour, IDamage
 {
     [SerializeField] private int _maxHealth;
 
-    private HealthManager _health;
+    public HealthManager Health {get; private set;}
 
     protected virtual void Awake()
     {
-        _health = new HealthManager(_maxHealth);
+        Health = new HealthManager(_maxHealth);
 
-        _health.OnDeath += Death;
+        Health.OnDeath += Death;
     }
 
     public void Damage(int amount)
     {
-        _health.Damage(amount);
+        Health.Damage(amount);
     }
 
     protected virtual void Death() { }

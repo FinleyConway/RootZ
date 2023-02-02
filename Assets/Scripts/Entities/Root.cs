@@ -5,7 +5,7 @@ using UnityEngine;
 public class Root : Entity
 {
     private const float _growRate = 0.05f;
-    private Coroutine _grow;
+    private IEnumerator _grow;
     private const string _growName = "Grow_";
 
     private MeshRenderer _mesh;
@@ -28,10 +28,12 @@ public class Root : Entity
 
     public void TriggerGrow(float infectionRate)
     {
-        _grow = StartCoroutine(Grow(infectionRate));
+        print("?");
+        _grow = Grow(infectionRate);
+        StartCoroutine(_grow);
     }
 
-    public void StopGrow()
+    private void StopGrow()
     {
         StopCoroutine(_grow);
         _shaderMat.SetFloat(_growName, 0);
@@ -50,6 +52,8 @@ public class Root : Entity
         }
         OnDestroy?.Invoke(false);
     }
+
+    public void Kill() => Death();
 
     protected override void Death()
     {

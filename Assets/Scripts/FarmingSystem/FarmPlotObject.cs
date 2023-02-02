@@ -7,9 +7,9 @@ public class FarmPlotObject
     private Grid3D<FarmPlotObject> _grid;
     private FarmPlotPlacedObject _placedObject;
 
-    public bool IsInfecting { get; private set; } = false;
+    public bool IsInfecting { get; set; } = false;
 
-    public static event Action<FarmPlotObject> OnRemovePlot;
+    public static event Action<FarmPlotObject, bool> OnRemovePlot;
 
     public FarmPlotObject(Grid3D<FarmPlotObject> grid, int x, int z)
     {
@@ -38,9 +38,12 @@ public class FarmPlotObject
 
     private void KillPlant(bool killedByPlayer)
     {
-        _placedObject.DestroySelf();
-        RemoveTileObject();
-        OnRemovePlot?.Invoke(this);
+        if (!killedByPlayer)
+        {
+            _placedObject.DestroySelf();
+            RemoveTileObject();
+        }
+        OnRemovePlot?.Invoke(this, killedByPlayer);
     }
 
     public void RemoveTileObject()

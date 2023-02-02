@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 6375615433244987198, guid: 941a1896038f03d478e35d5183e2f326, type: 3}
   <GridSize>k__BackingField: {x: 1, y: 1}
-  <GrowthTime>k__BackingField: 0
+  <SellAmount>k__BackingField: 10
+  <RootResistantType>k__BackingField: 0

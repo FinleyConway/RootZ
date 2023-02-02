@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class SellCropsSystem : MonoBehaviour, IInteractable
 {
+    [Header("Sound")]
+    [SerializeField] private SimpleAudioEvent _openSound;
+    [SerializeField] private AudioSource _source;
+
     [Header("Reference To Farm")]
     [SerializeField] private FarmManager _farm;
 
@@ -27,6 +31,7 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
         if (_canSell)
         {
             SellCrops();
+            _openSound.Play(_source);
         }
     }
 
@@ -36,7 +41,9 @@ public class SellCropsSystem : MonoBehaviour, IInteractable
         foreach (FarmPlotObject plot in _farm.GetActiveCrops())
         {
             amount += plot.GetPlacedObject().GetObjectData().SellAmount;
+            plot.GetPlacedObject().DestroySelf();
         }
+        _farm.GetActiveCrops().Clear();
         OnSellCrops?.Invoke(amount);
     }
 

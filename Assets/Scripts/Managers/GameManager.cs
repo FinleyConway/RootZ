@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     private Timer _timer;
     private FarmManager _farmM;
-    private FarmInfectionManager _infectionM;
+    private InfectionManager _infectionM;
     private GameState _state;
 
     public static event Action OnGameStart;
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     {
         _timer = new Timer();
         _farmM = GetComponent<FarmManager>();
-        _infectionM = GetComponent<FarmInfectionManager>();
+        _infectionM = GetComponent<InfectionManager>();
 
         _timer.OnTimerFinish += OnTimerFinish;
 
@@ -63,9 +63,9 @@ public class GameManager : MonoBehaviour
             OnGameStart?.Invoke();
 
             // see whats in the farm
-            _farmM.GetPlantedCropsAmount();
+            _farmM.GetPlantedCrops();
             // init infection system
-            _infectionM.InitInfection(_farmM.GetActiveCrops().Count);
+            _infectionM.InitWave();
 
             // start the timer
             _timer.InitTimer(true, _mainGameDuration);
@@ -73,9 +73,9 @@ public class GameManager : MonoBehaviour
 
         if (state == GameState.DownTime)
         {
-            OnDownTime?.Invoke();
+            _infectionM.StopWave();
 
-            _infectionM.StopInfection();
+            OnDownTime?.Invoke();
             _timer.InitTimer(true, _downTimeDuration);
         }
 

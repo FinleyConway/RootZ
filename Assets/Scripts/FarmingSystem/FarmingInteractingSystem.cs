@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class FarmingInteractingSystem : MonoBehaviour
 {
+    [Header("Sounds")]
+    [SerializeField] private SimpleAudioEvent _plantSound;
+    [SerializeField] private AudioSource _source;
+
+    [Header("Seeds")]
     [SerializeField] private List<PlantSO> _seeds;
     private PlantSO _currentSeed;
     private int _currentIndex = 0;
@@ -28,6 +33,7 @@ public class FarmingInteractingSystem : MonoBehaviour
         {
             Vector3 hit = LookAtHit();
             PlantCrop(hit);
+            _plantSound?.Play(_source);
         }
     }
 

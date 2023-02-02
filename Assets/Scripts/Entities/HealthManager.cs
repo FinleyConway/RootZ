@@ -35,6 +35,11 @@ public class HealthManager
         OnHealthChange?.Invoke();
     }
 
+    public void Kill()
+    {
+        Damage(_maxHealth);
+    }
+
     public void Heal(int healAmount)
     {
         _health += healAmount;
