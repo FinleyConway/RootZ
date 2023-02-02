@@ -7,6 +7,8 @@ public class FarmPlotObject
     private Grid3D<FarmPlotObject> _grid;
     private FarmPlotPlacedObject _placedObject;
 
+    public bool IsInfecting { get; private set; } = false;
+
     public static event Action<FarmPlotObject> OnRemovePlot;
 
     public FarmPlotObject(Grid3D<FarmPlotObject> grid, int x, int z)

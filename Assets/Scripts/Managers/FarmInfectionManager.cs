@@ -6,6 +6,8 @@ public class FarmInfectionManager : MonoBehaviour
 {
     [SerializeField, Range(1, 4)] private float _difficultLevel;
     [SerializeField] private float _spawnRate = 0.5f;
+    [SerializeField] private float _highGrowthResistant;
+    [SerializeField] private float _lowGrowthResistant;
     private int _maxInfectionAmount = 0;
     private int _currentMaxInfectionAmount = 0;
 
@@ -41,6 +43,15 @@ public class FarmInfectionManager : MonoBehaviour
     public void StopInfection()
     {
         _canInfect = false;
+        List<FarmPlotObject> crops = _farm.GetActiveCrops();
+
+        if (crops.Count > 0)
+        {
+            for (int i = 0; i < crops.Count; i++)
+            {
+                crops[crops.Count].GetPlacedObject().GetRoot().StopGrow();
+            }
+        }
     }
 
     private IEnumerator InitWave()
@@ -52,7 +63,9 @@ public class FarmInfectionManager : MonoBehaviour
             for (int i = 0; i < _currentMaxInfectionAmount; i++)
             {
                 yield return new WaitForSeconds(_spawnRate);
-                crops[Random.Range(0, crops.Count)].GetPlacedObject().GetRoot().TriggerGrow();
+
+                FarmPlotObject randPlot = crops[Random.Range(0, crops.Count)];
+                randPlot.GetPlacedObject().GetRoot().TriggerGrow(ResistantDecider(randPlot));
             }
         }
         else
@@ -70,12 +83,27 @@ public class FarmInfectionManager : MonoBehaviour
         List<FarmPlotObject> crops = _farm.GetActiveCrops();
         if (crops.Count > 0)
         {
-            crops[Random.Range(0, crops.Count)].GetPlacedObject().GetRoot().TriggerGrow();
+            FarmPlotObject randPlot = crops[Random.Range(0, crops.Count)];
 
+            randPlot.GetPlacedObject().GetRoot().TriggerGrow(ResistantDecider(randPlot));
         }
         else
         {
             print("No more crops to infect");
+        }
+    }
+
+    private float ResistantDecider(FarmPlotObject obj)
+    {
+        PlantSO.RootResistant type = obj.GetPlacedObject().GetObjectData().RootResistantType;
+
+        if (type == PlantSO.RootResistant.Low)
+        {
+            return _lowGrowthResistant;
+        }
+        else
+        {
+            return _highGrowthResistant;
         }
     }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Root : Entity
 {
-    [SerializeField] private float _growTime = 5;
     private const float _growRate = 0.05f;
     private Coroutine _grow;
     private const string _growName = "Grow_";
@@ -27,9 +26,9 @@ public class Root : Entity
         }
     }
 
-    public void TriggerGrow()
+    public void TriggerGrow(float infectionRate)
     {
-        _grow = StartCoroutine(Grow());
+        _grow = StartCoroutine(Grow(infectionRate));
     }
 
     public void StopGrow()
@@ -38,13 +37,13 @@ public class Root : Entity
         _shaderMat.SetFloat(_growName, 0);
     }
 
-    private IEnumerator Grow()
+    private IEnumerator Grow(float infectionRate)
     {
         float growValue = _shaderMat.GetFloat(_growName);
 
         while (growValue < 1)
         {
-            growValue += 1 / (_growTime / _growRate);
+            growValue += 1 / (infectionRate / _growRate);
             _shaderMat.SetFloat(_growName, growValue);
 
             yield return new WaitForSeconds(_growRate);

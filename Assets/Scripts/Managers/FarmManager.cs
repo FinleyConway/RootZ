@@ -72,8 +72,6 @@ public class FarmManager : MonoBehaviour
             // create item onto the grid
             if (canBuild)
             {
-                print("Placed Crop");
-
                 Vector2Int rotationOffset = crop.GetRotationOffset(GridObjetTypeSO.Dir.Down);
                 Vector3 placedObjectWorldPosition = Grid.ConvertGridToWorld(x, z) + new Vector3(rotationOffset.x, 0, rotationOffset.y) * Grid.GetCellSize();
                 FarmPlotPlacedObject placedObject = FarmPlotPlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, z), GridObjetTypeSO.Dir.Down, crop);
@@ -86,7 +84,6 @@ public class FarmManager : MonoBehaviour
             // inform the player that they cant
             else
             {
-                print("cant place here");
             }
         }
     }
