@@ -11,7 +11,8 @@ public class MeleeSystem : MonoBehaviour
     private Camera _cam;
 
     [Header("Sound")]
-    [SerializeField] private SimpleAudioEvent _swingSound;
+    [SerializeField] private SimpleAudioEvent _swingMissSound;
+    [SerializeField] private SimpleAudioEvent _swingHitSound;
     private AudioSource _source;
 
     [Header("Animation")]
@@ -46,8 +47,10 @@ public class MeleeSystem : MonoBehaviour
                 if (hit.transform.TryGetComponent(out IDamage damage))
                 {
                     damage.Damage(_damageDealingAmount);
+                    _swingHitSound.Play(_source);
                 }
             }
+            _swingMissSound.Play(_source);
             _lastSwingTime = Time.time;
         }
     }

@@ -21,7 +21,6 @@ public class FarmingInteractingSystem : MonoBehaviour
     [SerializeField] private AudioSource _source;
 
     [Header("Seeds")]
-    [SerializeField] private List<Seeds> _seeds = new List<Seeds>();
     private PlantSO _currentSeed;
     private int _currentIndex = 0;
     private bool _canPlant = true;
@@ -51,41 +50,19 @@ public class FarmingInteractingSystem : MonoBehaviour
 
     private void Update()
     {
-        SeedSelector();
-
         if (_currentSeed != null)
             if (Input.GetMouseButtonDown(1) && _canPlant)
             {
-                if (_seeds[_currentIndex].Amount > 0)
-                {
-                    Vector3 hit = LookAtHit();
+                Vector3 hit = LookAtHit();
                     PlantCrop(hit);
                     if (_plantSound != null) _plantSound.Play(_source);
-                    _seeds[_currentIndex].Amount--;
-                    if (_seeds[_currentIndex].Amount <= 0) _seeds[_currentIndex].Amount = 0;
-                }
             }
     }
 
     public void AddSeed(PlantSO plant, int amount)
     {
         Seeds seed = new Seeds(plant, amount);
-        _seeds.Add(seed);
-    }
-
-    // increments through crops and selected the current index
-    private void SeedSelector()
-    {
-        float delta = Input.mouseScrollDelta.y;
-        if (_seeds.Count <= 0) return;
-
-        if (delta > 0) _currentIndex++;
-        if (delta < 0) _currentIndex--;
-
-        if (_currentIndex < 0) _currentIndex = _seeds.Count;
-        else if (_currentIndex > _seeds.Count - 1) _currentIndex = 0;
-
-        _currentSeed = _seeds[_currentIndex].Seed;
+        _currentSeed = plant;
     }
 
     // get the position of where the raycast hits

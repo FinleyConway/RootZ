@@ -8,9 +8,16 @@ public class AddSeed : MonoBehaviour, IInteractable
 
     public void Interact(GameObject host)
     {
-        if (MoneyManager.Instance.GetMoney() > _seed.BuyAmount)
+        int money = MoneyManager.Instance.GetMoney();
+        if (money > _seed.BuyAmount)
         {
             _playerPlanting.AddSeed(_seed, _getAmount);
+            money -= _seed.BuyAmount;
+            if (money > 0)
+            {
+                money = 0;
+            }
+            MoneyManager.Instance.SetMoney(money);
         }
     }
 }

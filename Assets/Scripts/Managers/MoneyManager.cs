@@ -50,6 +50,11 @@ public class MoneyManager : MonoBehaviour
         return _currentAmount;
     }
 
+    public void SetMoney(int money)
+    {
+        _currentAmount = money; 
+    }
+
     private void OnCropsSold(int soldAmount)
     {
         _currentAmount += soldAmount;

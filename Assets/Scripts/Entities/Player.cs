@@ -39,6 +39,8 @@ public class Player : Entity
 
     private void HandleLook()
     {
+        if (PauseMenu.isPaused) return;
+        
         Vector2 delta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         _cameraPitch -= delta.y * _mouseSensitivity;
