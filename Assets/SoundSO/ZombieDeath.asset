@@ -9,10 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32a33dada1b864045829083d4290316e, type: 3}
-  m_Name: Axe
+  m_Script: {fileID: 11500000, guid: df02b1bdc7636ee45b92d122c67fe055, type: 3}
+  m_Name: ZombieDeath
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Insert Name
-  <Icon>k__BackingField: {fileID: 0}
-  <SellAmount>k__BackingField: 0
-  <CostAmount>k__BackingField: 0
+  clips:
+  - {fileID: 8300000, guid: fde67666beb3ad864801d8640e40cb6d, type: 3}
+  volume:
+    minValue: 1
+    maxValue: 1
+  pitch:
+    minValue: 0.8515535
+    maxValue: 1.0932102

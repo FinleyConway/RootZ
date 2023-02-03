@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df02b1bdc7636ee45b92d122c67fe055, type: 3}
+  m_Name: Zombie
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: d89577c7bad2cf42682299ed4d79219c, type: 3}
+  - {fileID: 8300000, guid: a440f6f0971eb3acaa761adddf7e0508, type: 3}
+  - {fileID: 8300000, guid: 9eeea67f459ef42e08e550432f83d633, type: 3}
+  - {fileID: 8300000, guid: 0d580d397bbd84e00a577a01ee5775a4, type: 3}
+  - {fileID: 8300000, guid: 1778ebd521a73651ba7024e384dfb4fc, type: 3}
+  volume:
+    minValue: 1
+    maxValue: 1
+  pitch:
+    minValue: 0.72497123
+    maxValue: 1.0817034

@@ -12,6 +12,13 @@ public class Zombie : Entity
     private Transform _playerPosition;
     private bool _isDead;
 
+    [SerializeField] private float _growlTime;
+    private float _lastGrowlTime;
+
+    [SerializeField] private SimpleAudioEvent _zombieDeath;
+    [SerializeField] private SimpleAudioEvent _RandomZombieSounds;
+    [SerializeField] private AudioSource _source;
+
     private NavMeshAgent _agent;
     private Animator _anim;
 
@@ -29,6 +36,12 @@ public class Zombie : Entity
         if (_isDead) return;
 
         IsMoving();
+
+        if (Time.time > _growlTime + _lastGrowlTime)
+        {
+            _RandomZombieSounds.Play(_source);
+            _lastGrowlTime = Time.time;
+        }
 
         if (Physics.Raycast(_hitCheckPosition.position, _hitCheckPosition.forward, out RaycastHit hit, _hitDistance, _playerMask))
         {

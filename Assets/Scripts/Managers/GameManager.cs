@@ -50,11 +50,6 @@ public class GameManager : MonoBehaviour
     {
         // timer to control main game loop
         _timer.TimerHandler(Time.deltaTime);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            UpdateGameState(GameState.Game);
-        }
     }
 
     public void UpdateGameState(GameState state)
@@ -81,10 +76,10 @@ public class GameManager : MonoBehaviour
 
         if (state == GameState.DownTime)
         {
+            _timer.InitTimer(true, _downTimeDuration);
             _infectionM.StopWave();
 
             OnDownTime?.Invoke();
-            _timer.InitTimer(true, _downTimeDuration);
         }
 
         if (state == GameState.Lost)
