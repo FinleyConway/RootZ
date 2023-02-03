@@ -59,9 +59,9 @@ public class InfectionManager : MonoBehaviour
         _canInfect = false;
 
         // get all the infected crops and kill them off
-        if (_currentlyInfectingPlots.Count > 0)
+        for (int i = 0; i < _currentlyInfectingPlots.Count; i++)
         {
-            for (int i = 0; i < _currentlyInfectingPlots.Count; i++)
+            if (_currentlyInfectingPlots.Count > 0)
             {
                 _currentlyInfectingPlots[i].GetPlacedObject().GetRoot().Kill();
             }

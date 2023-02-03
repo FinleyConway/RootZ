@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : Entity
 {
@@ -49,6 +50,6 @@ public class Player : Entity
 
     protected override void Death()
     {
-
+        SceneManager. LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

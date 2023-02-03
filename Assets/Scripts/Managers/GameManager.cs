@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     private Timer _timer;
     private FarmManager _farmM;
     private InfectionManager _infectionM;
+    private MoneyManager _moneyM;
     private GameState _state;
 
     public static event Action OnGameStart;
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
         _timer = new Timer();
         _farmM = GetComponent<FarmManager>();
         _infectionM = GetComponent<InfectionManager>();
+        _moneyM = GetComponent<MoneyManager>();
 
         _timer.OnTimerFinish += OnTimerFinish;
 
@@ -87,7 +89,7 @@ public class GameManager : MonoBehaviour
 
         if (state == GameState.Lost)
         {
-
+            Application.Quit();
         }
     }
 

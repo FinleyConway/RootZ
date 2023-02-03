@@ -2,6 +2,9 @@
 
 public class MoneyManager : MonoBehaviour
 {
+    public static MoneyManager Instance;
+
+    [SerializeField] private int _initAmount = 25;
     [SerializeField] private int _initBillAmount;
     [SerializeField] private int _billIncreaseAmount;
     private int _currentBillAmount;
@@ -11,10 +14,14 @@ public class MoneyManager : MonoBehaviour
 
     private void OnEnable()
     {
+        Instance = this;
+
         _gameManager = GetComponent<GameManager>();
         _currentBillAmount = _initBillAmount;
 
         SellCropsSystem.OnSellCrops += OnCropsSold;
+
+        _currentAmount = _initAmount;
     }
 
     private void OnDisable()

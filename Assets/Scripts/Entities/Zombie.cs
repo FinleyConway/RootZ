@@ -5,8 +5,9 @@ public class Zombie : Entity
 {
     [SerializeField] private Transform _hitCheckPosition;
     [SerializeField] private float _hitDistance;
-    [SerializeField] private float _hitDamage;
+    [SerializeField] private int _hitDamage;
     [SerializeField] private float _hitTime;
+    [SerializeField] private LayerMask _playerMask;
     private float _lastHitTime;
     private Transform _playerPosition;
     private bool _isDead;
@@ -29,13 +30,17 @@ public class Zombie : Entity
 
         IsMoving();
 
-        if (Physics.Raycast(_hitCheckPosition.position, _hitCheckPosition.forward, out RaycastHit hit, _hitDistance))
+        if (Physics.Raycast(_hitCheckPosition.position, _hitCheckPosition.forward, out RaycastHit hit, _hitDistance, _playerMask))
         {
             if (Time.time > _hitTime + _lastHitTime)
             {
                 _agent.SetDestination(transform.position);
                 _anim.SetTrigger("Hit");
                 _lastHitTime = Time.time;
+                if (hit.transform.TryGetComponent(out Player player))
+                {
+                    player.Damage(_hitDamage);
+                }
             }
         }
         else
